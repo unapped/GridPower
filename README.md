@@ -7,6 +7,11 @@ https://wiki.dfrobot.com/SKU_DFR1117_Beetle_ESP32_C6
 
 Solder 6 pins - only 4 but may end up adding dht11 and door sensor to board
 
+PINOUT is at https://dfimg.dfrobot.com/60c1e008bddfc41c3293de80/wiki/51ab86bba659126748111cb59bb4b12a.png
+Soldered: GND 3V3 4 on one side and BAT GND VIN on the other side.
+
+BAT and GND go together for a battery, VIN and GND go together for SOLAR, 3V3 and 4 go together for the LDR.
+
 #
 Connect GPIO 4 and 3.3v to the LDR, its an LDR so it doesnt matter which leg is which, and by setting the GPIO pin to type PULLUP you get a free resister to ground
 
