@@ -1,0 +1,91 @@
+esphome:
+  name: gridpower
+  friendly_name: GridPower
+
+esp32:
+  board: esp32-c6-devkitm-1
+  variant: ESP32C6
+  framework:
+    type: esp-idf
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+### DO WHAT YOU WANT HERE
+
+ota:
+  platform: esphome
+### DO WHAT YOU WANT HERE
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Gridpower WiFi Setup Hotspot"
+    password: "123456789"
+
+captive_portal:
+### needed for connecting the setup wifi stuff..
+
+web_server:
+### DO WHAT YOU WANT HERE - needed to use the VISIT button in esphome
+
+sensor:
+  - platform: wifi_signal
+    name: "WiFi Signal Strength"
+    device_class: signal_strength
+    update_interval: 600s
+  - platform: internal_temperature
+    name: "Internal Temprature"
+    update_interval: 600s
+  - platform: dht
+    pin: GPIO22
+    temperature:
+      name: "Temperature"
+    humidity:
+      name: "Humidity"
+    update_interval: 600s
+  - platform: adc
+    pin: GPIO0
+    name: "Battery Voltage"
+    attenuation: auto
+    unit_of_measurement: "V"
+    filters:
+      - multiply: 2.0  # approx scale based on board divider
+
+
+### FOR THE POWER METER
+  - platform: pulse_counter
+    pin:
+      number: GPIO4
+      mode: INPUT_PULLUP # needed to enable the internal resister on the board
+      inverted: true
+    name: "Grid Power"
+    update_interval: 10s
+
+#    ---- POWER (instantaneous) ----
+    unit_of_measurement: "W"
+    accuracy_decimals: 0
+    device_class: power
+    state_class: measurement
+    filters:
+      - multiply: 3.6   # 1000 imp/kWh → W
+
+#    ---- ENERGY (total) ----
+    total:
+      name: "Grid Energy"
+      unit_of_measurement: "kWh"
+      accuracy_decimals: 3
+      device_class: energy
+      state_class: total_increasing
+      filters:
+        - multiply: 0.001
+
+### you could configure more of these and use them for your 3 phase monitoring as well as for solar and export
+### check your IMP notes on the meter
+
+
